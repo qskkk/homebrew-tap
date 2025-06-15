@@ -4,19 +4,19 @@ class GitFleet < Formula
   
   if OS.mac?
     if Hardware::CPU.intel?
-      url "https://github.com/qskkk/git-fleet/releases/download/v0.4.2/git-fleet-v0.4.2-darwin-amd64.tar.gz"
-    sha256 "3048bc964e53c43095c99667c9fcd9682dac6ca148cbec3a0527f155d1897a98"
+      url "https://github.com/qskkk/git-fleet/releases/download/v0.4.3/git-fleet-v0.4.3-darwin-amd64.tar.gz"
+    sha256 "1769e231a005f73612ed80fba4edb7514e3c42ade1b4bf7efd4eb28427f65bac"
     else
-      url "https://github.com/qskkk/git-fleet/releases/download/v0.4.2/git-fleet-v0.4.2-darwin-arm64.tar.gz"
-    sha256 "8cd141485f09abc9b9e4c45fad91071a4b3afef900fc10d4619c095d077a08f4"
+      url "https://github.com/qskkk/git-fleet/releases/download/v0.4.3/git-fleet-v0.4.3-darwin-arm64.tar.gz"
+    sha256 "f6e19f3ccad23ec1d6f3da532c66a599d8df96a435b78fcf40200f09798b6f80"
     end
   elsif OS.linux?
     if Hardware::CPU.intel?
-      url "https://github.com/qskkk/git-fleet/releases/download/v0.4.2/git-fleet-v0.4.2-linux-amd64.tar.gz"
-    sha256 "3e046672daf86de5af45e95a8b8b5f78486f20e56b5ed6ae2ce858247a643bc6"
+      url "https://github.com/qskkk/git-fleet/releases/download/v0.4.3/git-fleet-v0.4.3-linux-amd64.tar.gz"
+    sha256 "17cac4251fe0fd036c00f1f8d850539dba80255fc1631a3234aeadfa676f6e94"
     else
-      url "https://github.com/qskkk/git-fleet/releases/download/v0.4.2/git-fleet-v0.4.2-linux-arm64.tar.gz"
-    sha256 "5c779a592c0d195a9eefb318efaf1b9fb94d97b9aee2e6a0145aac1a7043d132"
+      url "https://github.com/qskkk/git-fleet/releases/download/v0.4.3/git-fleet-v0.4.3-linux-arm64.tar.gz"
+    sha256 "6220ddafeb254f5be0e23b99fbd66860b297b3e87020bc44482352d86438cd12"
     end
   end
 
