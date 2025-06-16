@@ -1,23 +1,23 @@
 class GitFleet < Formula
   desc "Manage multiple Git repositories easily"
   homepage "https://github.com/qskkk/git-fleet"
-  version "1.2.0"
+  version "2.0.0"
   
   if OS.mac?
     if Hardware::CPU.intel?
-      url "https://github.com/qskkk/git-fleet/releases/download/v1.2.0/git-fleet-v1.2.0-darwin-amd64.tar.gz"
-    sha256 "d2966e753bfd3086e9b160da50525ab185261117acfd2237242c804a64dd4479"
+      url "https://github.com/qskkk/git-fleet/releases/download/v2.0.0/git-fleet-v2.0.0-darwin-amd64.tar.gz"
+    sha256 "a58af628ec43773207bc29f365ccb8654bc47b45426744547e0ec64ce6de36f6"
     else
-      url "https://github.com/qskkk/git-fleet/releases/download/v1.2.0/git-fleet-v1.2.0-darwin-arm64.tar.gz"
-    sha256 "a2824c4bfa38361795f9928f31c4682836f7955a1a13e2bd3da8a3b96868f99a"
+      url "https://github.com/qskkk/git-fleet/releases/download/v2.0.0/git-fleet-v2.0.0-darwin-arm64.tar.gz"
+    sha256 "39b911a77d1103988ea345ad2bd41859c35db08325785d8458cbd6f2384ba31d"
     end
   elsif OS.linux?
     if Hardware::CPU.intel?
-      url "https://github.com/qskkk/git-fleet/releases/download/v1.2.0/git-fleet-v1.2.0-linux-amd64.tar.gz"
-    sha256 "8a360f415fcdcaad592f7167b0b4d50cc3665c833feb414204617a9b250faca0"
+      url "https://github.com/qskkk/git-fleet/releases/download/v2.0.0/git-fleet-v2.0.0-linux-amd64.tar.gz"
+    sha256 "f92712117783e4637e3e6b2b1a8788699ac72541f10c1406bf5e7393cd4d02c3"
     else
-      url "https://github.com/qskkk/git-fleet/releases/download/v1.2.0/git-fleet-v1.2.0-linux-arm64.tar.gz"
-    sha256 "9c866092109949f96f70d73ac7e3db98cab3e02e1d2e7795e2c312a79e9bdc4d"
+      url "https://github.com/qskkk/git-fleet/releases/download/v2.0.0/git-fleet-v2.0.0-linux-arm64.tar.gz"
+    sha256 "109228cee99619903e257396466acc4985646b00bdbabd42b453248055a81c7c"
     end
   end
 
