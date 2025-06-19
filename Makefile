@@ -1,12 +1,26 @@
 # Makefile for git-fleet Homebrew formula
 # Usage: make update VERSION=v0.4.3
+# For authenticated requests: make update GITHUB_TOKEN=your_token
 
 FORMULA_FILE = git-fleet.rb
 REPO = qskkk/git-fleet
-GITHUB_API = https://api.github.com/repos/$(REPO)/releases/latest
+
+# GitHub token for authenticated requests (optional)
+ifdef GITHUB_TOKEN
+    GITHUB_AUTH_HEADER = -H "Authorization: token $(GITHUB_TOKEN)"
+    GITHUB_API_CMD = curl -s $(GITHUB_AUTH_HEADER) https://api.github.com/repos/$(REPO)/releases/latest
+else
+    GITHUB_API_CMD = curl -s https://api.github.com/repos/$(REPO)/releases/latest
+endif
 
 # Default version (can be overridden with make update VERSION=vX.X.X)
-VERSION ?= $(shell curl -s $(GITHUB_API) | jq -r '.tag_name')
+# If API call fails, you must specify VERSION manually
+VERSION ?= $(shell $(GITHUB_API_CMD) | jq -r '.tag_name // "FAILED"')
+
+# Check if VERSION is valid
+ifeq ($(VERSION),FAILED)
+    $(error GitHub API call failed. Please specify VERSION manually: make update VERSION=v1.0.1)
+endif
 
 # Binary URLs
 DARWIN_AMD64_URL = https://github.com/$(REPO)/releases/download/$(VERSION)/git-fleet-$(VERSION)-darwin-amd64.tar.gz
@@ -17,11 +31,22 @@ LINUX_ARM64_URL = https://github.com/$(REPO)/releases/download/$(VERSION)/git-fl
 # Temporary directory for downloads
 TEMP_DIR = /tmp/git-fleet-checksums
 
-.PHONY: help update clean check-deps download-binaries calculate-checksums update-formula
+.PHONY: help update clean check-deps download-binaries calculate-checksums update-formula latest-version test-api
 
 help: ## Display this help
 	@echo "Available commands:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+	@echo ""
+	@echo "Usage examples:"
+	@echo "  make update                           # Update to latest version (requires API access)"
+	@echo "  make update VERSION=v1.0.1          # Update to specific version"
+	@echo "  make update GITHUB_TOKEN=ghp_xxx    # Update with GitHub token (higher rate limit)"
+	@echo "  make calculate-checksums VERSION=v1.0.1  # Just calculate checksums"
+	@echo ""
+	@echo "GitHub API rate limit solution:"
+	@echo "  1. Create a GitHub token: https://github.com/settings/tokens"
+	@echo "  2. Use: make update GITHUB_TOKEN=your_token"
+	@echo "  3. Or specify version manually: make update VERSION=v1.0.1"
 
 check-deps: ## Check that dependencies are installed
 	@command -v curl >/dev/null 2>&1 || { echo "curl is required but not installed. Aborting." >&2; exit 1; }
@@ -29,7 +54,32 @@ check-deps: ## Check that dependencies are installed
 	@command -v shasum >/dev/null 2>&1 || { echo "shasum is required but not installed. Aborting." >&2; exit 1; }
 
 latest-version: check-deps ## Display the latest available version
-	@echo "Latest available version: $(VERSION)"
+	@echo "Checking latest version..."
+	@RESULT=$$($(GITHUB_API_CMD)); \
+	if echo "$$RESULT" | jq -e '.message' >/dev/null 2>&1; then \
+		echo "GitHub API Error: $$(echo "$$RESULT" | jq -r '.message')"; \
+		echo "Solution: Use GITHUB_TOKEN or specify VERSION manually"; \
+		exit 1; \
+	else \
+		echo "Latest available version: $$(echo "$$RESULT" | jq -r '.tag_name')"; \
+	fi
+
+test-api: check-deps ## Test GitHub API connectivity
+	@echo "Testing GitHub API connectivity..."
+	@RESULT=$$($(GITHUB_API_CMD)); \
+	if echo "$$RESULT" | jq -e '.message' >/dev/null 2>&1; then \
+		echo "❌ API Error: $$(echo "$$RESULT" | jq -r '.message')"; \
+		echo "Rate limit info:"; \
+		echo "  Reset time: $$(date -r $$(echo "$$RESULT" | jq -r '.documentation_url // "0"' | grep -o '[0-9]*' || echo "0") 2>/dev/null || echo "Unknown")"; \
+		echo "Solutions:"; \
+		echo "  1. Wait for rate limit reset"; \
+		echo "  2. Use GitHub token: make update GITHUB_TOKEN=your_token"; \
+		echo "  3. Specify version manually: make update VERSION=v1.0.1"; \
+	else \
+		echo "✅ API is working"; \
+		echo "Latest version: $$(echo "$$RESULT" | jq -r '.tag_name')"; \
+		echo "Rate limit remaining: $$(curl -s $(GITHUB_AUTH_HEADER) https://api.github.com/rate_limit | jq -r '.resources.core.remaining // "Unknown"')"; \
+	fi
 
 download-binaries: check-deps ## Download all binaries
 	@echo "Downloading binaries for version $(VERSION)..."
