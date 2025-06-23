@@ -143,6 +143,7 @@ update-formula: download-binaries ## Update the formula with new version and che
 update: update-formula ## Completely update the formula (download + calculate + update)
 	@echo "Update completed for version $(VERSION)"
 	@echo "Check changes with: git diff $(FORMULA_FILE)"
+	make clean
 
 clean: ## Clean temporary files
 	@echo "Cleaning temporary files..."
