@@ -167,3 +167,6 @@ dev-info: ## Display development information
 
 # Example usage with specific version
 # make update VERSION=v0.4.3
+
+# show-nix-hash:
+# python3 -c "import base64; import binascii; hex_hash='13f1eb437a2f86547dd418efab8eb9e0ccd9696605f30742f4285c12e96c3e25'; print('sha256-' + base64.b64encode(binascii.unhexlify(hex_hash)).decode())"
